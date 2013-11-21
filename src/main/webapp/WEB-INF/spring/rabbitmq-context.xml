@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/rabbit
+	http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+	">
+	
+	<!-- 
+	Example *simple* Spring configuration of a Rabbit exchange for a particular use case (create person).
+	Creates an exchange (kronos.person.exchange), a fixed request queue, and a fixed reply queue bound to 
+	the exchange.  Rabbit artifacts are lazily initialized, i.e., queues and exchange are not created until such
+	time that the application attempts to use them.
+
+	 -->
+
+	<bean id="connectionFactory"
+		class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+		<constructor-arg value="localhost" />
+		<property name="username" value="guest" />
+		<property name="password" value="guest" />
+		<property name="channelCacheSize" value="5" />
+	</bean>
+
+	<rabbit:admin connection-factory="connectionFactory" />
+
+	<!-- Primary Exchange -->
+	<topic-exchange name="kronos.person.exchange" durable="false" xmlns="http://www.springframework.org/schema/rabbit">
+		<bindings>
+			<binding queue="personGetRequestQ" pattern="person.get.request"/>
+			<binding queue="personGetResponseQ" pattern="person.get.response"/>
+		</bindings>
+	</topic-exchange>
+
+	<!-- Request and Response Queues -->
+	<rabbit:queue name="personGetRequestQ" id="personGetRequestQ" durable="false" exclusive="false"/>
+	<rabbit:queue name="personGetResponseQ" id="personGetResponseQ" durable="false" exclusive="false"/>
+	
+
+	
+	<!-- Spring RabbitTemplate for publishing responses -->
+	<rabbit:template id="rabbitTemplate"
+			connection-factory="connectionFactory" routing-key="person.get.response"
+			exchange="kronos.person.exchange"/>
+
+</beans>
