@@ -8,12 +8,14 @@
 	http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
 	">
 	
+	<!-- New Comment -->
+	
+	
 	<!-- 
 	Example *simple* Spring configuration of a Rabbit exchange for a particular use case (create person).
 	Creates an exchange (kronos.person.exchange), a fixed request queue, and a fixed reply queue bound to 
 	the exchange.  Rabbit artifacts are lazily initialized, i.e., queues and exchange are not created until such
 	time that the application attempts to use them.
-
 	 -->
 
 	<bean id="connectionFactory"
