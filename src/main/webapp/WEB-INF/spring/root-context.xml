@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
 	">
 	
+	<!-- Random comment -->
 	<import resource="rabbitmq-context.xml"/>
 	
 </beans>
